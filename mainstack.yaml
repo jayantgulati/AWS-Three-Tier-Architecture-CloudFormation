@@ -1,0 +1,50 @@
+Parameters:
+  AvailabilityZone1:
+    Description: Enter the availability zone 1
+    Type: AWS::EC2::AvailabilityZone::Name
+    
+  AvailabilityZone2:
+    Description:  Enter the availability zone 2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+Resources:
+
+  vpcstack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:  https://cftmybucket3245.s3.ap-south-1.amazonaws.com/VPC.yaml
+      TimeoutInMinutes: 5
+      
+  Securitygroupstack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cftmybucket3245.s3.ap-south-1.amazonaws.com/SG.yaml
+      TimeoutInMinutes: 5
+      Parameters:
+        VPCID: !GetAtt vpcstack.Outputs.vpcname
+
+  ec2groupstack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: Securitygroupstack
+    Properties:     
+      TemplateURL: https://cftmybucket3245.s3.ap-south-1.amazonaws.com/ec2.yaml
+      TimeoutInMinutes: 5
+
+  databasestack:
+    DependsOn: Securitygroupstack
+    Type: AWS::CloudFormation::Stack
+    Properties:     
+      TemplateURL: https://cftmybucket3245.s3.ap-south-1.amazonaws.com/Database.yaml
+      TimeoutInMinutes: 10  
+
+  albasgdbstack:
+    DependsOn: ec2groupstack
+    Type: AWS::CloudFormation::Stack   
+    Properties:     
+      TemplateURL: https://cftmybucket3245.s3.ap-south-1.amazonaws.com/ALB%2CASG%2CDB.yaml
+      TimeoutInMinutes: 10   
+                          
+Outputs:
+  outputfromnestedstack:
+    Value: !GetAtt Securitygroupstack.Outputs.nestedbucket
+

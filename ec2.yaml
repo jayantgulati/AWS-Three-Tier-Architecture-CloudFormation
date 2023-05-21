@@ -1,0 +1,21 @@
+Resources:        
+  
+  Ec2Instance3:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.nano
+      Tags:
+        - Value: Bastion Host
+          Key: Name
+      ImageId: ami-09d0476e695ad7a7b
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: True
+          DeviceIndex: 0
+          SubnetId: 
+            '{{resolve:ssm:/parameters/stacks/public-subnet-1/id}}'
+          DeleteOnTermination: True
+          GroupSet:
+            - '{{resolve:ssm:/parameters/stacks/security-groups/ssh/id}}'
+      KeyName: pub             
+
+ 
