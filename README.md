@@ -47,5 +47,10 @@ Tier 1
 
 1.CloudFront
 
+How to run the cloudformation stack ?
+
+
+
+
 
 
