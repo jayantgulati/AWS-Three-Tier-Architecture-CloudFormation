@@ -44,6 +44,7 @@ Public Subnet 2 (Availabitiy Zone - 2)
 1. Application Load Balancer 
 
 Tier 1
+
 1.CloudFront
 
 
