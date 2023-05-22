@@ -9,7 +9,7 @@ This project mainly creates three tier architecture using CloudFormation in YAML
 5. NAT Gateway
 6. Elastic IP
 7. Security Groups
-8. EC2
+8. EC2 Instances
 9. Application Load Balancer
 10. Auto-Scaling Groups
 11. CloudFront
@@ -17,6 +17,7 @@ This project mainly creates three tier architecture using CloudFormation in YAML
 13. Elastic File System
 14. SSM Parameters
 15. Launch Templates
+16. Bastion Host
 
 All the stacks are created using nested stack. There is only one Main-Stack and all others are nested stack.
 
@@ -48,6 +49,14 @@ Tier 1
 1.CloudFront
 
 How to run the cloudformation stack ?
+
+Steps
+1- Store all the YAML files in one S3 bucket except mainstack.yaml
+2- Copy the object url of every S3 uploaded object and replace it in mainstack.yaml
+3- Now go to cloudformation upload the mainstack.yaml and create the cloudformation template.
+4- Once the template is created go to cloudfront and paste the cloudfront distribution id in the browser.
+5- Check all the AWS Services which are created.
+
 
 
 
