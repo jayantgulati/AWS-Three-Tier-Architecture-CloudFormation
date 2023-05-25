@@ -1,4 +1,4 @@
-AWS-Three-Tier-Architecture-CloudFormation
+AWS Three-Tier Architecture using CloudFormation
 
 Description
 This project mainly creates three tier architecture using CloudFormation in YAML. This will include Services like :
@@ -58,9 +58,11 @@ Steps
 
 3- Now go to cloudformation upload the mainstack.yaml and create the cloudformation template.
 
-4- Once the template is created go to cloudfront and paste the cloudfront distribution id in the browser.
+4- Once the template is created go to cloudfront and paste the cloudfront distribution id in the browser. You will see a word-press application is created.
 
 5- Check all the AWS Services which are created.
+
+6- Delete the stack as it may incur changes for few services like ALB , NAT Gateway, EC2 Instances , RDS , EFS.
 
 
 
