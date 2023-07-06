@@ -1,0 +1,284 @@
+Parameters:
+  VPCID:
+    Description: VPC to operate in
+    Type: AWS::EC2::VPC::Id
+
+
+Mappings:
+
+  RegionMap:
+
+    af-south-1:
+      PrefixListCloudFront: pl-c0aa4fa9
+    eu-north-1:
+      PrefixListCloudFront: pl-fab65393
+    ap-south-1:
+      PrefixListCloudFront: pl-9aa247f3
+    eu-west-3:
+      PrefixListCloudFront: pl-75b1541c
+    eu-west-2:
+      PrefixListCloudFront: pl-93a247fa
+    eu-south-1:
+      PrefixListCloudFront: pl-1bbc5972
+    eu-west-1:
+      PrefixListCloudFront: pl-4fa04526
+    ap-northeast-2:
+      PrefixListCloudFront: pl-22a6434b
+    me-south-1:
+      PrefixListCloudFront: pl-17b2577e
+    ap-northeast-1:
+      PrefixListCloudFront: pl-58a04531
+    sa-east-1:
+      PrefixListCloudFront: pl-5da64334
+    ca-central-1:
+      PrefixListCloudFront: pl-38a64351
+    ap-east-1:
+      PrefixListCloudFront: pl-14b2577d
+    ap-southeast-1:
+      PrefixListCloudFront: pl-31a34658
+    ap-southeast-2:
+      PrefixListCloudFront: pl-b8a742d1
+    eu-central-1:
+      PrefixListCloudFront: pl-a3a144ca
+    us-east-1:
+      PrefixListCloudFront: pl-3b927c52
+    us-east-2:
+      PrefixListCloudFront: pl-b6a144df
+    us-west-1:
+      PrefixListCloudFront: pl-4ea04527
+    us-west-2:
+      PrefixListCloudFront: pl-82a045eb
+
+
+Resources:
+  
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SSH Security Group
+      VpcId: !Ref VPCID
+
+  SSHSecurityGroupSSM:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /parameters/stacks/security-groups/ssh/id
+      Type: String
+      Value: !GetAtt SSHSecurityGroup.GroupId
+
+  OutboundRule1:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      Description: Allow all outbound traffic
+      FromPort: 80
+      ToPort: 80 
+      IpProtocol: tcp
+      CidrIp: 0.0.0.0/0
+      GroupId: !Ref SSHSecurityGroup
+  
+  OutboundRule2:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      Description: Allow all outbound traffic
+      FromPort: 22
+      ToPort: 22
+      IpProtocol: tcp
+      CidrIp: 0.0.0.0/0
+      GroupId: !Ref SSHSecurityGroup
+      
+
+  InboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All SSH traffic from port 22
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      CidrIp: 0.0.0.0/0
+      GroupId: !Ref SSHSecurityGroup
+
+
+
+
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB Security Group
+      VpcId: !Ref VPCID 
+
+  ALBHTTPInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTP traffic from port 80
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      GroupId: !Ref ALBSecurityGroup 
+      SourcePrefixListId: !FindInMap [RegionMap, !Ref 'AWS::Region', PrefixListCloudFront]  
+   
+
+  ALBSecurityGroupSSM:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /parameters/stacks/security-groups/ALB/id
+      Type: String
+      Value: !GetAtt ALBSecurityGroup.GroupId    
+
+  SSHInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTPS traffic from port 22
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId: !Ref SSHSecurityGroup
+      GroupId: !Ref ALBSecurityGroup    
+
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web Server Security Group
+      VpcId: !Ref VPCID
+
+  WebServerSecurityGroupSSM:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /parameters/stacks/security-groups/web-server/id
+      Type: String
+      Value: !GetAtt WebServerSecurityGroup.GroupId    
+
+  WSHTTPInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTP traffic from port 80
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      SourceSecurityGroupId: !Ref ALBSecurityGroup
+      GroupId: !Ref WebServerSecurityGroup 
+
+  WSHTTPSInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTP traffic from port 443
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      SourceSecurityGroupId: !Ref ALBSecurityGroup
+      GroupId: !Ref WebServerSecurityGroup    
+
+  WSSSHInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTPS traffic from port 443
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId: !Ref SSHSecurityGroup
+      GroupId: !Ref WebServerSecurityGroup
+
+  WSSSHInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTPS traffic from port 22
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId: !Ref SSHSecurityGroup
+      GroupId: !Ref WebServerSecurityGroup             
+           
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Database Security Group
+      VpcId: !Ref VPCID
+
+  DBAuroraInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All traffic from port 3306
+      IpProtocol: tcp
+      FromPort: 3306
+      ToPort: 3306
+      SourceSecurityGroupId: !Ref WebServerSecurityGroup
+      GroupId: !Ref DatabaseSecurityGroup
+
+  DatabaseSecurityGroupSSM:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /parameters/stacks/security-groups/database/id
+      Type: String
+      Value: !GetAtt DatabaseSecurityGroup.GroupId         
+
+  EFSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EFS Security Group 
+      VpcId: !Ref VPCID
+
+
+  EFSInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All traffic from port 2049
+      IpProtocol: tcp
+      FromPort: 2049
+      ToPort: 2049
+      SourceSecurityGroupId: !Ref WebServerSecurityGroup
+      GroupId: !Ref EFSSecurityGroup
+
+  EFSSecurityGroupSSM:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /parameters/stacks/security-groups/EFS/id
+      Type: String
+      Value: !GetAtt EFSSecurityGroup.GroupId      
+
+  EFS1InboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All traffic from port 2049
+      IpProtocol: tcp
+      FromPort: 2049
+      ToPort: 2049
+      SourceSecurityGroupId: !Ref EFSSecurityGroup
+      GroupId: !Ref EFSSecurityGroup
+
+  SSHInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: All HTTPS traffic from port 22
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId: !Ref SSHSecurityGroup
+      GroupId: !Ref EFSSecurityGroup
+        
+
+
+Outputs:
+
+  nestedsecuritygroup:
+    Value: !GetAtt SSHSecurityGroup.GroupId
+    Description: SSH Security Group 
+
+  dbsg:
+    Value: !GetAtt DatabaseSecurityGroup.GroupId
+    Description: DB Security Group
+
+  efsg:
+    Value: !GetAtt EFSSecurityGroup.GroupId
+    Description: EFS Security Group
+
+  wssg:
+    Value: !GetAtt WebServerSecurityGroup.GroupId 
+    Description: Web Server Security Group
+
+  albsg:
+    Value: !GetAtt ALBSecurityGroup.GroupId
+    Description: ALB Security Group
+
+  sshsg:
+    Value: !GetAtt SSHSecurityGroup.GroupId
+    Description: SSH Security Group         
+
+  
