@@ -25,15 +25,13 @@ Tier 3
 
 Private Subnet 1 (Availabitiy Zone - 1)
 1.RDS
-2.EFS
-3.EC2
+2.EC2
 4.AutoScaling Group
 
 Private Subnet 2 (Availabitiy Zone - 2)
 1.RDS
-2.EFS
-3.EC2
-4.AutoScaling Group
+2.EC2
+3.AutoScaling Group
 
 Tier 2
 
@@ -54,17 +52,11 @@ How to run the cloudformation stack ?
 
 2- Copy the object url of every S3 uploaded object and replace it in mainstack.yaml in TemplateURL.
 
-3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbilitiy Zone , KeyName and AMI.
+3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbilitiy Zone , KeyName .
 
 4- Once the template is successfully completed. Go to cloudfront and paste the cloudfront distribution id in the browser. You will see an Apache Server running.  
 
 5- Check all the AWS Services which are created and go through each one of them.
 
-6- Delete the stack as it may incur changes for few services like ALB , NAT Gateway, EC2 Instances , RDS , EFS.
-
-
-
-
-
-
+6- Delete the stack as it may incur changes for few services like ALB , NAT Gateway, EC2 Instances , RDS.
 
