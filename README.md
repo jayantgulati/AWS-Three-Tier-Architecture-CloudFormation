@@ -2,9 +2,9 @@ AWS Three-Tier Architecture using CloudFormation
 
 Description
 This project mainly creates three tier architecture using CloudFormation in YAML. This will include Services like :
-1. VPC
-2. Subnets
-3. Route Table
+1. AWS VPC
+2. AWS Subnets
+3. AWS Route Table
 4. Internet Gateway
 5. NAT Gateway
 6. Elastic IP
@@ -12,10 +12,10 @@ This project mainly creates three tier architecture using CloudFormation in YAML
 8. EC2 Instances
 9. Application Load Balancer
 10. Auto-Scaling Groups
-11. CloudFront
-12. Relational Database 
-13. SSM Parameters
-14. Launch Templates
+11. AWS CloudFront
+12. AWS Relational Database Service 
+13. AWS SSM Parameters
+14. AWS Launch Templates
 15. Bastion Host
 
 All the stacks are created using nested stack. There is only one Main-Stack and others are nested stack.
