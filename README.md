@@ -56,10 +56,6 @@ How to run the cloudformation stack ?
 
 4- Once the template is successfully completed. Go to cloudfront and paste the cloudfront distribution id in the browser. You will see an Apache Server running.
 
-<img width="931" alt="image" src="https://github.com/jayantgulati/AWS-Three-Tier-Architecture-CloudFormation/assets/25551975/bec23c4f-ff15-4df1-bded-b5561c9e78f1">
-
-
-
 5- Check all the AWS Services which are created and go through each one of them.
 
 6- Delete the stack as it may incur changes for few services like ALB , NAT Gateway, EC2 Instances , RDS.
