@@ -52,9 +52,12 @@ How to run the cloudformation stack ?
 
 2- Copy the object url of every S3 uploaded object and replace it in mainstack.yaml in TemplateURL.
 
-3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbilitiy Zone , KeyName .
+3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbilitiy Zone , KeyName (Create one if you don't have it)
 
 4- Once the template is successfully completed. Go to cloudfront and paste the cloudfront distribution id in the browser. You will see an Apache Server running.
+
+<img width="931" alt="image" src="https://github.com/AssassinUKG/googleSearcher/assets/25551975/44836df1-1d25-48f8-a599-4568322a4170">
+
 
 5- Check all the AWS Services which are created and go through each one of them.
 
