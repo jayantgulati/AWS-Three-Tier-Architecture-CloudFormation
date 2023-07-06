@@ -14,10 +14,9 @@ This project mainly creates three tier architecture using CloudFormation in YAML
 10. Auto-Scaling Groups
 11. CloudFront
 12. Relational Database 
-13. Elastic File System
-14. SSM Parameters
-15. Launch Templates
-16. Bastion Host
+13. SSM Parameters
+14. Launch Templates
+15. Bastion Host
 
 All the stacks are created using nested stack. There is only one Main-Stack and others are nested stack.
 
@@ -54,12 +53,19 @@ How to run the cloudformation stack ?
 
 3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbilitiy Zone , KeyName (Create one if you don't have it)
 
+<img width="929" alt="image" src="https://github.com/AssassinUKG/googleSearcher/assets/25551975/8b911951-4b00-44f9-89f5-431bc2902c2a">
+
+<img width="933" alt="image" src="https://github.com/AssassinUKG/googleSearcher/assets/25551975/a068fd0b-f740-4096-9009-504036341138">
+
+<img width="917" alt="image" src="https://github.com/jayantgulati/AWS-Three-Tier-Architecture-CloudFormation/assets/25551975/6f570d07-5b2d-48c5-b47a-70aef9fb7470">
+
+
 4- Once the template is successfully completed. Go to cloudfront and paste the cloudfront distribution id in the browser. You will see an Apache Server running.
 
-<img width="931" alt="image" src="https://github.com/AssassinUKG/googleSearcher/assets/25551975/44836df1-1d25-48f8-a599-4568322a4170">
+
 
 
 5- Check all the AWS Services which are created and go through each one of them.
 
-6- Delete the stack as it may incur changes for few services like ALB , NAT Gateway, EC2 Instances , RDS.
+6- Make sure to delete the stack once you go through it. It may incur charges for services like NAT Gateway , EC2 Instance , RDS , Application Load Balancer.
 
