@@ -1,0 +1,59 @@
+Parameters:
+
+  AvailabilityZone1:
+    Description: Enter the availability zone 1
+    Type: AWS::EC2::AvailabilityZone::Name
+    
+  AvailabilityZone2:
+    Description:  Enter the availability zone 2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  KeyName:
+    Description: Enter the Key Name
+    Type: AWS::EC2::KeyPair::KeyName 
+
+Resources:
+
+  vpcstack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:  https://prod-cloudformation-three-tier-architecture.s3.ap-south-1.amazonaws.com/VPC.yaml
+      TimeoutInMinutes: 10
+      Parameters: 
+        AvailabilityZone1: !Ref AvailabilityZone1
+        AvailabilityZone2: !Ref AvailabilityZone2
+      
+  Securitygroupstack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://prod-cloudformation-three-tier-architecture.s3.ap-south-1.amazonaws.com/Security-Group.yaml
+      TimeoutInMinutes: 10
+      Parameters:
+        VPCID: !GetAtt vpcstack.Outputs.vpcname
+
+  ec2groupstack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: Securitygroupstack
+    Properties:     
+      TemplateURL: https://prod-cloudformation-three-tier-architecture.s3.ap-south-1.amazonaws.com/EC2-Instance.yaml
+      TimeoutInMinutes: 10
+      Parameters:
+        KeyName: !Ref KeyName
+
+  databasestack:
+    DependsOn: Securitygroupstack
+    Type: AWS::CloudFormation::Stack
+    Properties:     
+      TemplateURL: https://prod-cloudformation-three-tier-architecture.s3.ap-south-1.amazonaws.com/RDS-Database.yaml
+      TimeoutInMinutes: 10  
+
+  albasgdbstack:
+    DependsOn: ec2groupstack
+    Type: AWS::CloudFormation::Stack   
+    Properties:     
+      TemplateURL: https://prod-cloudformation-three-tier-architecture.s3.ap-south-1.amazonaws.com/ALB-ASG-CLoudFront.yaml
+      TimeoutInMinutes: 20
+      Parameters:
+        KeyName: !Ref KeyName
+                        
+

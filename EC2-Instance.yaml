@@ -1,0 +1,27 @@
+Parameters:
+
+  KeyName:
+    Description: Enter the Key Name
+    Type: AWS::EC2::KeyPair::KeyName 
+
+Resources:        
+  
+  Ec2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.nano
+      Tags:
+        - Value: Bastion Host
+          Key: Name
+      ImageId: '{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}'
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: True
+          DeviceIndex: 0
+          SubnetId: 
+            '{{resolve:ssm:/parameters/stacks/public-subnet-1/id}}'
+          DeleteOnTermination: True
+          GroupSet:
+            - '{{resolve:ssm:/parameters/stacks/security-groups/ssh/id}}'
+      KeyName: !Ref KeyName            
+
+ 
