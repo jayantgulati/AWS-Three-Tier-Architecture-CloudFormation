@@ -55,7 +55,7 @@ How to run the cloudformation stack ?
 
 2- Copy the object url of every S3 uploaded object and replace it in mainstack.yaml in TemplateURL.
 
-3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availbility Zone , KeyName (Create one if you don't have it)
+3- Now go to cloudformation upload the mainstack.yaml and enter parameters like Availability Zone , KeyName (Create one if you don't have it)
 
 <img width="929" alt="image" src="https://github.com/AssassinUKG/googleSearcher/assets/25551975/8b911951-4b00-44f9-89f5-431bc2902c2a">
 
